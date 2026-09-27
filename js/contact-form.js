@@ -28,6 +28,16 @@
     var p = iso.split("-");
     return p[2] + "/" + p[1] + "/" + p[0];
   }
+  // Date en toutes lettres pour l'email d'Emmanuelle : « vendredi 10 octobre 2026 »
+  // (le champ date du navigateur transmet sinon « 2026-10-10 »).
+  function frDateLongue(iso) {
+    var d = new Date(iso + "T12:00:00");
+    try {
+      return d.toLocaleDateString("fr-FR", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
+    } catch (e) {
+      return frDate(iso);
+    }
+  }
   if (arrivee && depart) {
     arrivee.min = isoDate(new Date());
     var syncDates = function () {
@@ -76,10 +86,14 @@
     }
     setStatus("");
 
+    var data = new FormData(form);
+    if (arrivee && arrivee.value) data.set("arrivee", frDateLongue(arrivee.value));
+    if (depart && depart.value) data.set("depart", frDateLongue(depart.value));
+
     fetch("/", {
       method: "POST",
       headers: { "Content-Type": "application/x-www-form-urlencoded" },
-      body: new URLSearchParams(new FormData(form)).toString()
+      body: new URLSearchParams(data).toString()
     })
       .then(function (response) {
         if (response.ok) {
