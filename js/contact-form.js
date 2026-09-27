@@ -1,8 +1,9 @@
 /* Mon Petit Coin de Bretagne — envoi du formulaire de réservation.
-   Même fonctionnement que le site Studio VM : la demande est envoyée en
-   arrière-plan à /api/contact (fonction Netlify, voir
-   netlify/functions/contact.mjs) qui l'expédie par email à Emmanuelle ;
-   le visiteur reste sur la page et voit une confirmation. */
+   Comme sur le site Studio VM, la demande part en arrière-plan et le
+   visiteur reste sur la page, avec une confirmation. L'envoi passe par
+   les formulaires Netlify (formulaire « reservation ») : Netlify transmet
+   chaque demande par email à Emmanuelle, et « Répondre » écrit directement
+   au voyageur (champ email). */
 (function () {
   "use strict";
 
@@ -17,15 +18,15 @@
   var successPanel = document.querySelector("[data-form-success]");
   var arrivee = form.querySelector('input[name="arrivee"]');
   var depart = form.querySelector('input[name="depart"]');
-
-  // Anti-robot (voir la fonction) : moment où le formulaire est devenu
-  // utilisable dans ce navigateur.
-  var timestampField = form.querySelector('input[name="ts"]');
-  if (timestampField) timestampField.value = String(Date.now());
+  var subject = form.querySelector('input[name="subject"]');
 
   // Dates : pas d'arrivée dans le passé, départ forcément après l'arrivée.
   function isoDate(d) {
     return d.getFullYear() + "-" + String(d.getMonth() + 1).padStart(2, "0") + "-" + String(d.getDate()).padStart(2, "0");
+  }
+  function frDate(iso) {
+    var p = iso.split("-");
+    return p[2] + "/" + p[1] + "/" + p[0];
   }
   if (arrivee && depart) {
     arrivee.min = isoDate(new Date());
@@ -59,8 +60,13 @@
     var honeypot = form.querySelector('input[name="societe_web"]');
     if (honeypot && honeypot.value) return;
 
-    var payload = {};
-    new FormData(form).forEach(function (value, key) { payload[key] = value; });
+    // Objet de l'email reçu par Emmanuelle : nom du voyageur et dates.
+    if (subject) {
+      var quand = arrivee && arrivee.value
+        ? " — du " + frDate(arrivee.value) + (depart && depart.value ? " au " + frDate(depart.value) : "")
+        : "";
+      subject.value = "Demande de séjour — " + form.nom.value.trim() + quand;
+    }
 
     if (submitBtn) {
       submitBtn.disabled = true;
@@ -70,23 +76,21 @@
     }
     setStatus("");
 
-    fetch("/api/contact", {
+    fetch("/", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "Accept": "application/json" },
-      body: JSON.stringify(payload)
+      headers: { "Content-Type": "application/x-www-form-urlencoded" },
+      body: new URLSearchParams(new FormData(form)).toString()
     })
       .then(function (response) {
-        return response.json().catch(function () { return { ok: false }; }).then(function (data) {
-          if (response.ok && data.ok) {
-            form.hidden = true;
-            if (successPanel) {
-              successPanel.hidden = false;
-              successPanel.focus();
-            }
-          } else {
-            setStatus(data.message || "Une erreur est survenue. Appelez Emmanuelle au " + CONTACT_PHONE + " ou écrivez à " + CONTACT_EMAIL + ".");
+        if (response.ok) {
+          form.hidden = true;
+          if (successPanel) {
+            successPanel.hidden = false;
+            successPanel.focus();
           }
-        });
+        } else {
+          setStatus("Une erreur est survenue. Appelez Emmanuelle au " + CONTACT_PHONE + " ou écrivez à " + CONTACT_EMAIL + ".");
+        }
       })
       .catch(function () {
         setStatus("Impossible d'envoyer votre demande pour le moment. Appelez Emmanuelle au " + CONTACT_PHONE + " ou écrivez à " + CONTACT_EMAIL + ".");
