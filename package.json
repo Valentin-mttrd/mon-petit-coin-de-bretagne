@@ -1,9 +1,0 @@
-{
-  "name": "mon-petit-coin-de-bretagne",
-  "version": "1.0.0",
-  "private": true,
-  "description": "Site statique de Mon Petit Coin de Bretagne. Seule dépendance : nodemailer, pour la fonction Netlify qui envoie les demandes de réservation (netlify/functions/contact.mjs).",
-  "dependencies": {
-    "nodemailer": "^10.0.10"
-  }
-}
