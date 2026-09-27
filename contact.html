@@ -129,15 +129,21 @@
         </div>
 
         <div>
-          <form action="mailto:monpetitcoindebretagne@outlook.fr" method="post" enctype="text/plain" style="background:var(--linen);padding:2rem;border-radius:var(--radius);display:flex;flex-direction:column;gap:1.1rem;">
+          <form name="reservation" action="/contact.html#demande-envoyee" method="POST" data-netlify="true" netlify-honeypot="societe_web" data-contact-form novalidate style="background:var(--linen);padding:2rem;border-radius:var(--radius);display:flex;flex-direction:column;gap:1.1rem;">
             <h3 class="mt-0">Écrire à Emmanuelle</h3>
+            <input type="hidden" name="form-name" value="reservation">
+            <input type="hidden" name="subject" value="Demande de séjour — Mon Petit Coin de Bretagne">
+            <div class="form-honeypot" aria-hidden="true">
+              <label for="societe_web">Ne pas remplir ce champ</label>
+              <input type="text" id="societe_web" name="societe_web" tabindex="-1" autocomplete="off">
+            </div>
             <label style="font-size:0.85rem;font-weight:600;">
               Nom et prénom
-              <input type="text" name="nom" required style="width:100%;margin-top:0.4rem;padding:0.8em 1em;border-radius:4px;border:1px solid var(--line);font-family:var(--font-body);font-size:1rem;">
+              <input type="text" name="nom" required maxlength="200" autocomplete="name" style="width:100%;margin-top:0.4rem;padding:0.8em 1em;border-radius:4px;border:1px solid var(--line);font-family:var(--font-body);font-size:1rem;">
             </label>
             <label style="font-size:0.85rem;font-weight:600;">
               Email
-              <input type="email" name="email" required style="width:100%;margin-top:0.4rem;padding:0.8em 1em;border-radius:4px;border:1px solid var(--line);font-family:var(--font-body);font-size:1rem;">
+              <input type="email" name="email" required maxlength="254" autocomplete="email" style="width:100%;margin-top:0.4rem;padding:0.8em 1em;border-radius:4px;border:1px solid var(--line);font-family:var(--font-body);font-size:1rem;">
             </label>
             <div class="grid grid-2" style="gap:1rem;">
               <label style="font-size:0.85rem;font-weight:600;">
@@ -162,11 +168,21 @@
             </label>
             <label style="font-size:0.85rem;font-weight:600;">
               Votre message
-              <textarea name="message" rows="4" style="width:100%;margin-top:0.4rem;padding:0.8em 1em;border-radius:4px;border:1px solid var(--line);font-family:var(--font-body);font-size:1rem;resize:vertical;"></textarea>
+              <textarea name="message" rows="4" maxlength="5000" style="width:100%;margin-top:0.4rem;padding:0.8em 1em;border-radius:4px;border:1px solid var(--line);font-family:var(--font-body);font-size:1rem;resize:vertical;"></textarea>
             </label>
-            <button class="btn btn-primary" type="submit">Envoyer ma demande</button>
-            <p style="font-size:0.8rem;color:var(--slate);margin:0;">Ce formulaire ouvre votre messagerie habituelle pour envoyer le message à Emmanuelle — aucune donnée n'est stockée sur ce site.</p>
+            <p class="form-status" data-form-status role="alert" hidden></p>
+            <button class="btn btn-primary" type="submit" data-submit>Envoyer ma demande</button>
+            <p style="font-size:0.8rem;color:var(--slate);margin:0;">Votre demande est transmise directement à Emmanuelle par email.</p>
           </form>
+
+          <div class="form-success" id="demande-envoyee" data-form-success tabindex="-1" hidden>
+            <h3 class="mt-0">Votre demande a bien été envoyée.</h3>
+            <p style="margin:0;">Merci ! Emmanuelle revient vers vous rapidement pour confirmer les disponibilités et répondre à vos questions.</p>
+          </div>
+          <div class="form-success" id="demande-erreur" tabindex="-1" hidden>
+            <h3 class="mt-0">Votre demande n'a pas pu être envoyée.</h3>
+            <p style="margin:0;">Appelez directement Emmanuelle au <a href="tel:+33750630946">07 50 63 09 46</a> ou écrivez à <a href="mailto:monpetitcoindebretagne@outlook.fr">monpetitcoindebretagne@outlook.fr</a>.</p>
+          </div>
         </div>
       </div>
     </div>
@@ -231,5 +247,6 @@
 </footer>
 
 <script src="js/main.js"></script>
+<script src="js/contact-form.js"></script>
 </body>
 </html>
