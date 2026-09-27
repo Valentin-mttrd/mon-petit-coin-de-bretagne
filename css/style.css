@@ -144,6 +144,10 @@ section { padding-block: clamp(4rem, 9vw, 8rem); }
 .btn-outline:hover { background: var(--navy-deep); color: var(--white); }
 .btn-sand { background: var(--sand-deep); color: var(--navy-deep); }
 .btn-sand:hover { background: var(--sand); }
+/* Mobile : un bouton au libellé long passe à la ligne au lieu de déborder de l'écran */
+@media (max-width: 600px) {
+  .btn { white-space: normal; text-align: center; max-width: 100%; }
+}
 
 /* ---- En-tête / navigation ---- */
 .site-header {
@@ -200,6 +204,17 @@ section { padding-block: clamp(4rem, 9vw, 8rem); }
 }
 .phone-link { display: none; font-weight: 600; font-size: 0.85rem; white-space: nowrap; }
 .brand { flex-shrink: 0; white-space: nowrap; }
+/* Petits téléphones : en-tête plus compact pour que le bouton menu reste visible */
+@media (max-width: 400px) {
+  .site-header__bar { gap: 0.5rem; }
+  .brand { font-size: 1rem; }
+  .brand span { font-size: 0.58rem; letter-spacing: 0.1em; }
+  .header-actions { gap: 0.4rem; }
+  .header-actions .btn-primary { padding: 0.75em 0.95em; }
+}
+@media (max-width: 339px) {
+  .brand span { display: none; }
+}
 .nav-toggle {
   display: inline-flex;
   align-items: center; justify-content: center;
