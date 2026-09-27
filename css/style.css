@@ -496,6 +496,29 @@ section { padding-block: clamp(4rem, 9vw, 8rem); }
 }
 .footer-bottom a { color: var(--slate); }
 
+/* ---- Formulaire de réservation (envoi via /api/contact) ---- */
+.form-honeypot { position: absolute; left: -9999px; width: 1px; height: 1px; overflow: hidden; }
+[data-contact-form][hidden] { display: none !important; }
+.form-status {
+  margin: 0;
+  padding: 0.85em 1.1em;
+  background: var(--white);
+  border-left: 3px solid var(--ocean);
+  border-radius: 0 4px 4px 0;
+  font-size: 0.92rem;
+  color: var(--navy-deep);
+}
+.form-success {
+  background: var(--linen);
+  padding: 2rem;
+  border-radius: var(--radius);
+  outline: none;
+}
+.form-success p { color: var(--ink); }
+.form-success a { text-decoration: underline; text-underline-offset: 3px; }
+/* Sans JavaScript, la fonction renvoie sur #demande-envoyee ou #demande-erreur */
+.form-success:target { display: block; }
+
 /* ---- Utilitaires ---- */
 .text-center { text-align: center; }
 .mt-0 { margin-top: 0; }
